@@ -11,6 +11,8 @@ import { DigitalCardModule } from './digital-card/digital-card.module.js';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: true,
+      sortSchema: true,
+      graphiql: true,
     }),
     DigitalCardModule,
   ],
