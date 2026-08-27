@@ -3,6 +3,7 @@
 /node_modules
 /build
 /generated
+
 # Logs
 logs
 *.log
@@ -36,6 +37,13 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
+
+.agents/
+.claude/
+.windsurf/
+
+*.tsbuildinfo
+
 .env
 .env.development.local
 .env.test.local
