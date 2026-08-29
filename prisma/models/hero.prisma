@@ -1,0 +1,16 @@
+model Hero {
+  id           String   @id
+  title        String
+  fullName     String
+  profession   String
+  description  String
+  email        String
+  location     String
+  isOpenToWork Boolean
+  github       String?
+  linkedin     String?
+  telegram     String?
+  image        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

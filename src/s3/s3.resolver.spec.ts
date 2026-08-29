@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DigitalCardResolver } from './digital-card.resolver.js';
+import { S3Resolver } from './s3.resolver.js';
 
-describe('DigitalCardResolver', () => {
-  let resolver: DigitalCardResolver;
+describe('S3Resolver', () => {
+  let resolver: S3Resolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DigitalCardResolver],
+      providers: [S3Resolver],
     }).compile();
 
-    resolver = module.get<DigitalCardResolver>(DigitalCardResolver);
+    resolver = module.get<S3Resolver>(S3Resolver);
   });
 
   it('should be defined', () => {

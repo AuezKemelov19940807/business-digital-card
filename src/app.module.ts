@@ -4,7 +4,9 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AppResolver } from './app.resolver.js';
-import { DigitalCardModule } from './digital-card/digital-card.module.js';
+
+import { HeroModule } from './hero/hero.module.js';
+import { TechStackModule } from './tech-stack/tech-stack.module.js';
 
 @Module({
   imports: [
@@ -14,7 +16,8 @@ import { DigitalCardModule } from './digital-card/digital-card.module.js';
       sortSchema: true,
       graphiql: true,
     }),
-    DigitalCardModule,
+    HeroModule,
+    TechStackModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],

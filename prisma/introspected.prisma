@@ -1,0 +1,3 @@
+enum crdb_internal_region {
+  aws_eu_central_1 @map("aws-eu-central-1")
+}
