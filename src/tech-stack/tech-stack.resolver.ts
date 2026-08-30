@@ -1,4 +1,11 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { TechStackType } from './types/tech-stack.type.js';
 import { TechStackService } from './tech-stack.service.js';
 import { CreateTechStackInput } from './dto/create-tech-stack.input.js';
@@ -26,5 +33,10 @@ export class TechStackResolver {
   @Mutation(() => TechStackType)
   removeTechStack(@Args('id') id: string) {
     return this.techStackService.remove(id);
+  }
+
+  @ResolveField(() => String)
+  icon(@Parent() techStack: TechStackType) {
+    return `${process.env.API_URL}/api/files/${techStack.icon}`;
   }
 }

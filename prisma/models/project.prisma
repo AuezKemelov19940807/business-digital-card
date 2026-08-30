@@ -1,0 +1,21 @@
+model Project {
+    id String @id @default(uuid())
+
+    title String
+
+    description String?
+
+    image String?
+
+    url String?
+
+    github String?
+
+    isFeatured Boolean @default(false)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+
+    projectTechStacks ProjectTechStack[]
+}

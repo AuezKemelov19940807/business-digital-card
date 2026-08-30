@@ -3,6 +3,6 @@ import { HeroService } from './hero.service.js';
 import { HeroResolver } from './hero.resolver.js';
 
 @Module({
-  providers: [HeroService, HeroResolver]
+  providers: [HeroService, HeroResolver],
 })
 export class HeroModule {}

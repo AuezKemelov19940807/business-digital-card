@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
@@ -56,5 +57,14 @@ export class S3Service {
     return getSignedUrl(this.client, command, {
       expiresIn: 300,
     });
+  }
+
+  async getObject(key: string) {
+    return this.client.send(
+      new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      }),
+    );
   }
 }

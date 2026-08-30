@@ -9,7 +9,7 @@ export class S3Resolver {
 
   @Mutation(() => UploadUrlType)
   async createUploadUrl(@Args('input') input: CreateUploadUrlInput) {
-    const key = `tech-stack/${crypto.randomUUID()}-${input.fileName}`;
+    const key = `${input.folder}/${crypto.randomUUID()}-${input.fileName}`;
 
     const uploadUrl = await this.s3Service.getUploadUrl(key, input.contentType);
 

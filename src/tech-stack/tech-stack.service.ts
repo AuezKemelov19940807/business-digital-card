@@ -1,13 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTechStackInput } from './dto/create-tech-stack.input.js';
 import { prisma } from '../lib/prisma.js';
 import { UpdateTechStackInput } from './dto/update-tech-stack.input.js';
-import { S3Service } from '../s3/s3.service.js';
 
 @Injectable()
 export class TechStackService {
-  constructor(private readonly s3Service: S3Service) {}
-
   async create(input: CreateTechStackInput) {
     return prisma.techStack.create({
       data: input,
@@ -26,7 +23,7 @@ export class TechStackService {
     });
 
     if (!techStackItem) {
-      throw new Error('Tech Stack not found');
+      throw new NotFoundException('Tech Stack not found');
     }
 
     return techStackItem;
@@ -42,7 +39,7 @@ export class TechStackService {
     });
 
     if (!techStackItem) {
-      throw new Error('Tech Stack not found');
+      throw new NotFoundException('Tech Stack not found');
     }
 
     return prisma.techStack.update({
@@ -61,7 +58,7 @@ export class TechStackService {
     });
 
     if (!techStackItem) {
-      throw new Error('Tech Stack not found');
+      throw new NotFoundException('Tech Stack not found');
     }
 
     return prisma.techStack.delete({

@@ -1,9 +1,9 @@
 import { Field, InputType, PartialType } from '@nestjs/graphql';
-import { CreateTechStackInput } from './create-tech-stack.input.js';
+import { CreateReviewDto } from './create-review.input.js';
 import { IsUUID } from 'class-validator';
 
 @InputType()
-export class UpdateTechStackInput extends PartialType(CreateTechStackInput) {
+export class UpdateReviewInputDto extends PartialType(CreateReviewDto) {
   @Field(() => String)
   @IsUUID()
   id: string;

@@ -12,4 +12,9 @@ export class CreateUploadUrlInput {
   @IsString()
   @IsNotEmpty()
   contentType: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  folder: string;
 }

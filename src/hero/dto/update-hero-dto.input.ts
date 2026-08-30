@@ -65,8 +65,8 @@ export class UpdateHeroDtoInput {
   @IsUrl()
   telegram?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsUrl()
+  @IsString()
   image?: string;
 }
