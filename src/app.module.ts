@@ -20,6 +20,7 @@ import { ReviewModule } from './review/review.module.js';
       autoSchemaFile: true,
       sortSchema: true,
       graphiql: true,
+      introspection: true,
     }),
     HeroModule,
     TechStackModule,
