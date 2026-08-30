@@ -1,115 +1,299 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Business Digital Card API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend API for a digital business card platform.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The application provides a GraphQL API for managing personal information, work experience, achievements, projects, technology stacks, and client reviews. It also supports file uploads using S3-compatible object storage.
 
-## Description
+## Tech Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **TypeScript**
+- **NestJS**
+- **GraphQL**
+- **Prisma ORM**
+- **CockroachDB**
+- **S3**
+- **Docker**
+- **Git**
 
-## Project setup
+## Features
 
-```bash
-$ npm install
+- 👤 Personal information
+- 💼 Work experience
+- 🏆 Achievements
+- 🚀 Projects
+- 🛠️ Technology stacks
+- ⭐ Client reviews
+- 🔗 Project ↔ Tech Stack relationships
+- 🖼️ S3 file uploads
+- 🔍 GraphQL queries and mutations
+- 🗄️ Prisma migrations
+
+## API
+
+The production API is deployed on Fly.io:
+
+**API:** https://business-digital-card.fly.dev/
+
+**GraphQL:** https://business-digital-card.fly.dev/graphql
+
+## GraphQL
+
+The API uses GraphQL for queries and mutations.
+
+Example query:
+
+```graphql
+query {
+  projects {
+    id
+    title
+    description
+    image
+    url
+    github
+    isFeatured
+    techStacks {
+      id
+      name
+    }
+  }
+}
 ```
 
-## Compile and run the project
+Example mutation:
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```graphql
+mutation {
+  createProject(
+    input: {
+      title: "Business Digital Card"
+      description: "Digital business card platform"
+      isFeatured: true
+      techStackIds: ["tech-stack-id-1", "tech-stack-id-2"]
+    }
+  ) {
+    id
+    title
+    techStacks {
+      id
+      name
+    }
+  }
+}
 ```
 
-## Run tests
+## Database
 
-```bash
-# unit tests
-$ npm run test
+The project uses **CockroachDB** with **Prisma ORM**.
 
-# e2e tests
-$ npm run test:e2e
+Main entities:
 
-# test coverage
-$ npm run test:cov
+- `Hero`
+- `Experience`
+- `Achievement`
+- `Project`
+- `TechStack`
+- `ProjectTechStack`
+- `Review`
+
+### Project ↔ TechStack
+
+Projects and technologies have a many-to-many relationship.
+
+```text
+Project
+   │
+   │ many-to-many
+   │
+ProjectTechStack
+   │
+   │
+TechStack
 ```
 
-## Deployment
+For example:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```text
+Business Digital Card
+├── TypeScript
+├── NestJS
+├── GraphQL
+├── Prisma
+└── CockroachDB
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## S3 Uploads
 
-## Observability
+The application uses S3-compatible storage for uploaded images and files.
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+The API generates presigned URLs that allow the client to upload files directly to S3.
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+Example:
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+```graphql
+mutation {
+  createUploadUrl(
+    input: {
+      fileName: "avatar.jpg"
+      contentType: "image/jpeg"
+      folder: "reviews"
+    }
+  ) {
+    uploadUrl
+    key
+  }
+}
+```
 
-## Resources
+## Environment Variables
 
-Check out a few resources that may come in handy when working with NestJS:
+Create a `.env` file:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```env
+DATABASE_URL="your-cockroachdb-connection-string"
 
-## Support
+S3_ENDPOINT="your-s3-endpoint"
+S3_REGION="your-region"
+S3_ACCESS_KEY="your-access-key"
+S3_SECRET_KEY="your-secret-key"
+S3_BUCKET="your-bucket"
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Do not commit `.env` to the repository.
 
-## Stay in touch
+## Installation
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+git clone <repository-url>
+cd business-digital-card
+npm install
+```
 
-## License
+Generate Prisma Client:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# business-digital-card
+```bash
+npx prisma generate
+```
+
+## Database Migrations
+
+Check migration status:
+
+```bash
+npx prisma migrate status
+```
+
+Run development migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Deploy existing migrations:
+
+```bash
+npx prisma migrate deploy
+```
+
+## Running Locally
+
+Development:
+
+```bash
+npm run dev
+```
+
+Build:
+
+```bash
+npm run build
+```
+
+Production:
+
+```bash
+npm run start
+```
+
+Local GraphQL endpoint:
+
+```text
+http://localhost:3000/graphql
+```
+
+Production GraphQL endpoint:
+
+```text
+https://business-digital-card.fly.dev/graphql
+```
+
+## Project Structure
+
+```text
+src/
+├── achievement/
+├── experience/
+├── project/
+├── tech-stack/
+├── review/
+├── s3/
+├── lib/
+│   └── prisma.ts
+└── main.ts
+```
+
+Each module follows a modular NestJS architecture:
+
+```text
+Module
+├── resolver
+├── service
+├── dto
+└── types
+```
+
+### Resolver
+
+Handles GraphQL queries and mutations.
+
+### Service
+
+Contains business logic and Prisma database operations.
+
+### DTO / Input
+
+Defines and validates incoming GraphQL data.
+
+### Type
+
+Defines GraphQL response types.
+
+## Validation
+
+Input data is validated using `class-validator`.
+
+Example:
+
+```typescript
+@IsString()
+@IsNotEmpty()
+@MaxLength(50)
+title: string;
+```
+
+## API Modules
+
+| Module        | Description               |
+| ------------- | ------------------------- |
+| `Project`     | Manage projects           |
+| `TechStack`   | Manage technologies       |
+| `Experience`  | Manage work experience    |
+| `Achievement` | Manage achievements       |
+| `Review`      | Manage client reviews     |
+| `S3`          | Generate file upload URLs |
+
+## Author
+
+**Business Digital Card**
+
+Backend application built with **TypeScript, NestJS, GraphQL, Prisma and CockroachDB**.
