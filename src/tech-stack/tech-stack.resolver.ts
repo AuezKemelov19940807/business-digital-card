@@ -21,8 +21,13 @@ export class TechStackResolver {
   }
 
   @Query(() => [TechStackType])
-  techStack() {
+  techStacks() {
     return this.techStackService.findAll();
+  }
+
+  @Query(() => TechStackType)
+  techStack(id: string) {
+    return this.techStackService.get(id);
   }
 
   @Mutation(() => TechStackType)
