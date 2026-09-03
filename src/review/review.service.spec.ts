@@ -82,6 +82,34 @@ describe('ReviewService', () => {
     ).rejects.toThrow('Not found Review');
   });
 
+  it('should return review by id', async () => {
+    const review = {
+      avatar:
+        'https://business-digital-card.fly.dev/api/files/reviews/29a74c95-b3e9-4d37-a240-e82ff19348be-aizhan-mamymkhanova',
+      description:
+        'Auez is a professional and dependable developer. He quickly understood the project, solved complex tasks efficiently, and delivered high-quality work on time. Great to work with!',
+      fullName: 'Aizhan Mamytkhanova',
+      id: '06a8e656-ef67-4f01-a247-623ae429e844',
+      position: 'Project Manager',
+      rating: 5,
+      createdAt: new Date('2026-08-01T00:00:00.000Z'),
+      updatedAt: new Date('2026-08-01T00:00:00.000Z'),
+    };
+
+    vi.mocked(prisma.review.findUnique).mockResolvedValue(review);
+
+    const result = await service.get('06a8e656-ef67-4f01-a247-623ae429e844');
+
+    expect(result).toEqual(review);
+
+    expect(prisma.review.findUnique).toHaveBeenCalledTimes(1);
+    expect(prisma.review.findUnique).toHaveBeenCalledWith({
+      where: {
+        id: '06a8e656-ef67-4f01-a247-623ae429e844',
+      },
+    });
+  });
+
   it('should create review', async () => {
     const input = {
       avatar:
