@@ -2,6 +2,11 @@
 
 ARG NODE_VERSION=24.19.0
 
+
+# -------------------------
+# Base
+# -------------------------
+
 FROM node:${NODE_VERSION}-slim AS base
 
 LABEL fly_launch_runtime="NestJS/Prisma"
@@ -25,7 +30,7 @@ RUN apt-get update -qq && \
     python-is-python3 && \
     rm -rf /var/lib/apt/lists/*
 
-# Dependencies
+# Install dependencies
 COPY package.json package-lock.json ./
 
 RUN npm ci --include=dev
@@ -42,6 +47,9 @@ COPY . .
 
 # Build NestJS
 RUN npm run build
+
+
+
 
 
 # -------------------------
