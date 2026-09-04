@@ -1,8 +1,8 @@
 # Business Digital Card API
 
-Backend API for a digital business card platform.
+Backend API for a digital business card platform built with **NestJS, GraphQL, Prisma and CockroachDB**.
 
-The application provides a GraphQL API for managing personal information, work experience, achievements, projects, technology stacks, and client reviews. It also supports file uploads using S3-compatible object storage.
+The application provides a GraphQL API for managing personal information, work experience, achievements, projects, technology stacks and client reviews. It also supports direct file uploads using **S3-compatible object storage**.
 
 ## Tech Stack
 
@@ -14,8 +14,8 @@ The application provides a GraphQL API for managing personal information, work e
 - **S3-compatible storage**
 - **Vitest**
 - **Docker**
-- **Git**
 - **GitHub Actions**
+- **Fly.io**
 
 ## Features
 
@@ -25,21 +25,26 @@ The application provides a GraphQL API for managing personal information, work e
 - 🚀 Projects
 - 🛠️ Technology stacks
 - ⭐ Client reviews
-- 🔗 Project ↔ Tech Stack relationships
-- 🖼️ S3 file uploads
+- 🔗 Project ↔ Tech Stack many-to-many relationships
+- 🖼️ S3-compatible file uploads
 - 🔍 GraphQL queries and mutations
 - 🗄️ Prisma migrations
 - 🧪 Unit testing with Vitest
-- ⚙️ Automated CI with GitHub Actions
+- ⚙️ Automated CI/CD with GitHub Actions
 - 🐳 Dockerized production deployment
+- ☁️ Production deployment on Fly.io
 
 ## API
 
-The production API is deployed on Fly.io:
+The production API is deployed on Fly.io.
 
-**API:** https://business-digital-card.fly.dev/
+**API**
 
-**GraphQL:** https://business-digital-card.fly.dev/graphql
+https://business-digital-card.fly.dev/
+
+**GraphQL**
+
+https://business-digital-card.fly.dev/graphql
 
 ## GraphQL
 
@@ -103,7 +108,7 @@ The project uses **CockroachDB** with **Prisma ORM**.
 
 ### Project ↔ TechStack
 
-Projects and technologies have a many-to-many relationship.
+Projects and technologies have a many-to-many relationship through `ProjectTechStack`.
 
 ```text
 Project
@@ -116,7 +121,7 @@ ProjectTechStack
 TechStack
 ```
 
-For example:
+Example:
 
 ```text
 Business Digital Card
@@ -127,13 +132,31 @@ Business Digital Card
 └── CockroachDB
 ```
 
-## S3 Uploads
+## S3 File Uploads
 
-The application uses S3-compatible storage for uploaded images and files.
+The application uses S3-compatible object storage for uploaded images and files.
 
-The API generates presigned URLs that allow the client to upload files directly to S3.
+Instead of sending files through the backend, the API generates **presigned URLs** that allow the client to upload files directly to object storage.
 
-### Example
+### Upload Flow
+
+```text
+Client
+   │
+   │ request presigned URL
+   ▼
+GraphQL API
+   │
+   │ generate presigned URL
+   ▼
+Client
+   │
+   │ direct upload
+   ▼
+S3 Storage
+```
+
+### Example Mutation
 
 ```graphql
 mutation {
@@ -160,11 +183,11 @@ DATABASE_URL="your-cockroachdb-connection-string"
 S3_ENDPOINT="your-s3-endpoint"
 S3_REGION="your-region"
 S3_ACCESS_KEY="your-access-key"
-S3_SECRET_KEY="your-secret-key"
+S3_SECRET_KEY="your-s3-secret-key"
 S3_BUCKET="your-bucket"
 ```
 
-Do not commit `.env` to the repository.
+Never commit `.env` or production credentials to the repository.
 
 ## Installation
 
@@ -244,12 +267,12 @@ https://business-digital-card.fly.dev/graphql
 
 The project uses **Vitest** for unit testing.
 
-Tests cover service and resolver logic, including:
+The test suite covers service and resolver logic, including:
 
 - CRUD operations
 - GraphQL queries and mutations
 - Resolver-to-service interaction
-- Not found scenarios
+- Not-found scenarios
 - Prisma transaction logic
 - GraphQL field resolvers
 
@@ -271,16 +294,25 @@ Run tests with coverage:
 npm run test:coverage
 ```
 
-## CI
+Current test suite:
 
-The project uses **GitHub Actions** for continuous integration.
+```text
+17 test files
+91 tests
+```
 
-On every push and pull request, the CI pipeline:
+## CI/CD
 
-1. Installs dependencies
-2. Generates Prisma Client
-3. Runs unit tests
-4. Builds the NestJS application
+The project uses **GitHub Actions** for automated CI/CD.
+
+Every push and pull request runs the CI checks:
+
+1. Install dependencies
+2. Generate Prisma Client
+3. Run Vitest tests
+4. Build the NestJS application
+
+For pushes to `main`, a successful CI run automatically triggers deployment to Fly.io.
 
 ```text
 Push / Pull Request
@@ -295,11 +327,45 @@ Push / Pull Request
         ├── npm run test
         │
         └── npm run build
+                │
+                ▼
+          Tests & Build OK
+                │
+                ▼
+          Deploy to Fly.io
 ```
+
+### Deployment Rule
+
+```text
+Pull Request
+     │
+     ▼
+ Test + Build
+     │
+     ▼
+   No deploy
+```
+
+```text
+Push to main
+     │
+     ▼
+ Test + Build
+     │
+     ├── ❌ Failed → Deploy stopped
+     │
+     └── ✅ Success
+            │
+            ▼
+        Fly.io Deploy
+```
+
+This prevents a broken build or failing test suite from being deployed to production.
 
 ## Docker
 
-The application includes a production-ready Dockerfile.
+The application includes a production Dockerfile.
 
 Build the Docker image:
 
@@ -400,7 +466,7 @@ GraphQL Client
  CockroachDB
 ```
 
-File uploads use a separate flow:
+File uploads use a separate direct-to-storage flow:
 
 ```text
 Client
@@ -411,36 +477,53 @@ GraphQL API
   │
   │ generate URL
   ▼
-S3 Storage
-  ▲
+Client
   │
   │ direct upload
-  │
-Client
+  ▼
+S3 Storage
 ```
 
 ## Deployment
 
-The production application is deployed using **Docker** and **Fly.io**.
+The production application is deployed using **Docker and Fly.io**.
+
+Deployment is automated through GitHub Actions.
 
 ```text
 GitHub
    │
+   │ push to main
    ▼
 GitHub Actions
    │
    ├── Tests
-   └── Build
-        │
-        ▼
-     Docker
-        │
-        ▼
-     Fly.io
-        │
-        ▼
+   │
+   ├── Build
+   │
+   └── Deploy
+         │
+         ▼
+       Docker
+         │
+         ▼
+      Fly.io
+         │
+         ▼
    Production API
 ```
+
+The deployment uses a Fly.io application-scoped deploy token stored securely as a GitHub Actions secret.
+
+## Production
+
+**API**
+
+https://business-digital-card.fly.dev/
+
+**GraphQL**
+
+https://business-digital-card.fly.dev/graphql
 
 ## Author
 
@@ -448,4 +531,4 @@ GitHub Actions
 
 Backend application built with:
 
-**TypeScript · NestJS · GraphQL · Prisma · CockroachDB · S3 · Vitest · Docker**
+**TypeScript · NestJS · GraphQL · Prisma · CockroachDB · S3 · Vitest · Docker · GitHub Actions · Fly.io**
